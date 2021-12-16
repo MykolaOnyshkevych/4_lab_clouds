@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: senosrs-lab4-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: senosrs-lab4-front
+  template:
+    metadata:
+      labels:
+        app: senosrs-lab4-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: senosrs-lab4-front
+        image: mykolaonyshkevych/senosrs-lab4-front:4
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: senosrs-lab4-front
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: senosrs-lab4-front
